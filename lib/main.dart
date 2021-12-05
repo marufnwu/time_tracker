@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:time_tracker/app_sign_in/sign_in_page.dart';
 import 'package:time_tracker/home_page/home_page.dart';
 import 'package:time_tracker/landing_page.dart';
+import 'package:time_tracker/services/auth.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: LandingPage(),
+      home: LandingPage(auth: Auth(),),
     );
   }
 }
