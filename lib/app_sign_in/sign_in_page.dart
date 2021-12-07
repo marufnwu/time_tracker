@@ -1,19 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:time_tracker/app_sign_in/email_signin_page.dart';
 import 'package:time_tracker/app_sign_in/sign_in_button.dart';
 import 'package:time_tracker/app_sign_in/social_sign_in_button.dart';
 import 'package:time_tracker/services/auth.dart';
 
 class SignInPage extends StatelessWidget {
-  const SignInPage({Key? key, required this.auth, required this.onSignIn}) : super(key: key);
+  const SignInPage({Key? key, required this.auth}) : super(key: key);
 
   final AuthBase auth;
-  final Function(AuthUser?) onSignIn;
 
-  Future<void> _signInAnonymously() async{
-    try{
+  Future<void> _signInAnonymously() async {
+    try {
       final authResult = await auth.signInAnonymously();
-      onSignIn(authResult);
-    }catch(e){
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  void _emailSignInPage(BuildContext context){
+    Navigator.of(context).push(
+      MaterialPageRoute(
+          fullscreenDialog: false,
+          builder: (context)=>EmailSignInPage(auth: auth,)
+      )
+    );
+  }
+
+  Future<void> _signInWithGoogle() async {
+    try {
+      final authResult = await auth.signWithGoogle();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+  Future<void> _signInWithFacebook() async {
+    try {
+      final authResult = await auth.signWithFacebook();
+    } catch (e) {
       print(e.toString());
     }
   }
@@ -33,7 +56,7 @@ class SignInPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
+              const Text(
                 "Sign In",
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -41,55 +64,54 @@ class SignInPage extends StatelessWidget {
                     fontSize: 30.0,
                     fontWeight: FontWeight.w900),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 8.0,
               ),
               Container(
                 child: SocialSignInButton(
-                 text: "Sign in with Google",
+                  text: "Sign in with Google",
                   textColor: Colors.black,
                   height: 50,
                   imageName: "images/google-logo.png",
                   borderRadius: 5,
                   color: Colors.white,
-                  onPress: (){},
+                  onPress: _signInWithGoogle,
                 ),
               ),
-
               SizedBox(
                 height: 8.0,
               ),
               Container(
                 child: SocialSignInButton(
-                 text: "Sign in with Facebook",
+                  text: "Sign in with Facebook",
                   textColor: Colors.white,
                   height: 50,
                   imageName: "images/facebook-logo.png",
                   borderRadius: 5,
                   color: Colors.indigo,
-                  onPress: (){},
+                  onPress: _signInWithFacebook,
                 ),
               ),
-
               SizedBox(
                 height: 8.0,
               ),
               Container(
                 child: SignInButton(
-                 text: "Sign in with Email",
+                  text: "Sign in with Email",
                   textColor: Colors.white,
                   height: 50,
                   borderRadius: 5,
                   color: Colors.teal,
-                  onPress: (){},
+                  onPress: ()=>_emailSignInPage(context),
                 ),
               ),
-
               SizedBox(
                 height: 8.0,
               ),
-              Text("or", textAlign: TextAlign.center,),
-
+              Text(
+                "or",
+                textAlign: TextAlign.center,
+              ),
               SizedBox(
                 height: 8.0,
               ),
@@ -102,7 +124,6 @@ class SignInPage extends StatelessWidget {
                   onPress: _signInAnonymously,
                 ),
               ),
-
             ],
           ),
         ),

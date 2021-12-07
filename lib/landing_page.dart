@@ -13,38 +13,30 @@ class LandingPage extends StatefulWidget {
 }
 
 class _LandingPageState extends State<LandingPage> {
-  AuthUser? _mUser;
 
-  @override
-  void initState() {
-    super.initState();
-    _checkCurrentUser();
-  }
-
-  Future<void> _checkCurrentUser() async{
-    _updateUser(await widget.auth!.currentUser());
-  }
-
-  void _updateUser(AuthUser? user){
-    setState(() {
-      _mUser = user!;
-    });
-  }
-
-  void _signout(){
-    setState(() {
-      _mUser = null;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
-    return _mUser != null ?  HomePage(
-      onSignout: ()=>_signout(),
-      auth: widget.auth!,
-    ) : SignInPage(
-        onSignIn: (user)=>_updateUser(user),
-        auth: widget.auth!
-    );
+    return StreamBuilder<AuthUser?>(
+        stream: widget.auth!.authUserStateChanges,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            AuthUser? mUser = snapshot.data;
+            return mUser != null
+                ? HomePage(
+                    auth: widget.auth!,
+                  )
+                : SignInPage(auth: widget.auth!);
+          }else if(snapshot.connectionState == ConnectionState.waiting){
+            return Scaffold(
+              body: CircularProgressIndicator(),
+            );
+          }
+          else{
+            return Scaffold(
+              body: CircularProgressIndicator(),
+            );
+          }
+        });
   }
 }
