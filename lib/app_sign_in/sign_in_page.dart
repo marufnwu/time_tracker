@@ -3,13 +3,14 @@ import 'package:time_tracker/app_sign_in/email_signin_page.dart';
 import 'package:time_tracker/app_sign_in/sign_in_button.dart';
 import 'package:time_tracker/app_sign_in/social_sign_in_button.dart';
 import 'package:time_tracker/services/auth.dart';
+import 'package:time_tracker/services/auth_providers.dart';
 
 class SignInPage extends StatelessWidget {
-  const SignInPage({Key? key, required this.auth}) : super(key: key);
+  const SignInPage({Key? key}) : super(key: key);
 
-  final AuthBase auth;
 
-  Future<void> _signInAnonymously() async {
+  Future<void> _signInAnonymously(AuthBase auth) async {
+
     try {
       final authResult = await auth.signInAnonymously();
     } catch (e) {
@@ -21,19 +22,19 @@ class SignInPage extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute(
           fullscreenDialog: false,
-          builder: (context)=>EmailSignInPage(auth: auth,)
+          builder: (context)=>EmailSignInPage()
       )
     );
   }
 
-  Future<void> _signInWithGoogle() async {
+  Future<void> _signInWithGoogle(AuthBase auth) async {
     try {
       final authResult = await auth.signWithGoogle();
     } catch (e) {
       print(e.toString());
     }
   }
-  Future<void> _signInWithFacebook() async {
+  Future<void> _signInWithFacebook(AuthBase auth) async {
     try {
       final authResult = await auth.signWithFacebook();
     } catch (e) {
@@ -43,6 +44,7 @@ class SignInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final auth = AuthProvider.of(context);
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -75,7 +77,7 @@ class SignInPage extends StatelessWidget {
                   imageName: "images/google-logo.png",
                   borderRadius: 5,
                   color: Colors.white,
-                  onPress: _signInWithGoogle,
+                  onPress: ()=>_signInWithGoogle(auth),
                 ),
               ),
               SizedBox(
@@ -89,7 +91,7 @@ class SignInPage extends StatelessWidget {
                   imageName: "images/facebook-logo.png",
                   borderRadius: 5,
                   color: Colors.indigo,
-                  onPress: _signInWithFacebook,
+                  onPress: ()=>_signInWithFacebook(auth),
                 ),
               ),
               SizedBox(
@@ -121,7 +123,7 @@ class SignInPage extends StatelessWidget {
                   height: 50,
                   borderRadius: 5,
                   color: Colors.amberAccent,
-                  onPress: _signInAnonymously,
+                  onPress: ()=>_signInAnonymously(auth),
                 ),
               ),
             ],

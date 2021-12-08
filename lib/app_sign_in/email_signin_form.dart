@@ -4,14 +4,14 @@ import 'package:time_tracker/app_sign_in/sign_in_button.dart';
 import 'package:time_tracker/app_sign_in/validator.dart';
 import 'package:time_tracker/common_widget/platform_altert_widget.dart';
 import 'package:time_tracker/services/auth.dart';
+import 'package:time_tracker/services/auth_providers.dart';
 enum EmailSignInformType{
   signIn,
   signUp
 }
 
 class EmailSignInForm extends StatefulWidget with EmailAndPasswordValidator{
-  final AuthBase auth;
-  EmailSignInForm({Key? key, required this.auth}) : super(key: key);
+  EmailSignInForm({Key? key}) : super(key: key);
 
   @override
   State<EmailSignInForm> createState() => _EmailSignInFormState();
@@ -35,6 +35,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   String get _getPassword =>  _passwordController.text;
 
 
+
   void _submit() async{
     setState(() {
       _isLoading = true;
@@ -43,10 +44,11 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
    //await Future.delayed(Duration(seconds: 5));
 
     try{
+      final auth = AuthProvider.of(context);
       if(_formType == EmailSignInformType.signIn){
-          await widget.auth.signInWithEmailPassword(_getEmail, _getPassword);
+          await auth.signInWithEmailPassword(_getEmail, _getPassword);
       }else{
-        await widget.auth.signUpWithEmailPassword(_getEmail, _getPassword);
+        await auth.signUpWithEmailPassword(_getEmail, _getPassword);
 
       }
 
