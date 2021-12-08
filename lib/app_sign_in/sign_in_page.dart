@@ -1,20 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:time_tracker/app_sign_in/email_signin_page.dart';
 import 'package:time_tracker/app_sign_in/sign_in_button.dart';
 import 'package:time_tracker/app_sign_in/social_sign_in_button.dart';
 import 'package:time_tracker/services/auth.dart';
 import 'package:time_tracker/services/auth_providers.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
   const SignInPage({Key? key}) : super(key: key);
 
+  @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  bool _isLoading = false;
 
   Future<void> _signInAnonymously(AuthBase auth) async {
 
     try {
+      setLoading(true);
       final authResult = await auth.signInAnonymously();
     } catch (e) {
       print(e.toString());
+    }finally{
+      setLoading(false);
     }
   }
 
@@ -29,22 +39,35 @@ class SignInPage extends StatelessWidget {
 
   Future<void> _signInWithGoogle(AuthBase auth) async {
     try {
+      setLoading(true);
       final authResult = await auth.signWithGoogle();
     } catch (e) {
       print(e.toString());
+    }finally{
+      setLoading(false);
     }
   }
+
   Future<void> _signInWithFacebook(AuthBase auth) async {
     try {
+      setLoading(true);
       final authResult = await auth.signWithFacebook();
     } catch (e) {
       print(e.toString());
+    }finally{
+      setLoading(false);
     }
+  }
+
+  void setLoading(bool state){
+    setState(() {
+      _isLoading = state;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final auth = AuthProvider.of(context);
+    final auth = Provider.of<AuthBase>(context, listen: false);
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
@@ -58,13 +81,9 @@ class SignInPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                "Sign In",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 30.0,
-                    fontWeight: FontWeight.w900),
+              SizedBox(
+                height: 50,
+                  child: _buildHeader()
               ),
               const SizedBox(
                 height: 8.0,
@@ -77,7 +96,7 @@ class SignInPage extends StatelessWidget {
                   imageName: "images/google-logo.png",
                   borderRadius: 5,
                   color: Colors.white,
-                  onPress: ()=>_signInWithGoogle(auth),
+                  onPress: ()=> _isLoading? null: _signInWithGoogle(auth),
                 ),
               ),
               SizedBox(
@@ -91,7 +110,7 @@ class SignInPage extends StatelessWidget {
                   imageName: "images/facebook-logo.png",
                   borderRadius: 5,
                   color: Colors.indigo,
-                  onPress: ()=>_signInWithFacebook(auth),
+                  onPress: ()=>_isLoading? null: _signInWithFacebook(auth),
                 ),
               ),
               SizedBox(
@@ -104,7 +123,7 @@ class SignInPage extends StatelessWidget {
                   height: 50,
                   borderRadius: 5,
                   color: Colors.teal,
-                  onPress: ()=>_emailSignInPage(context),
+                  onPress: ()=>_isLoading? null: _emailSignInPage(context),
                 ),
               ),
               SizedBox(
@@ -123,7 +142,7 @@ class SignInPage extends StatelessWidget {
                   height: 50,
                   borderRadius: 5,
                   color: Colors.amberAccent,
-                  onPress: ()=>_signInAnonymously(auth),
+                  onPress: ()=>_isLoading? null: _signInAnonymously(auth),
                 ),
               ),
             ],
@@ -131,5 +150,23 @@ class SignInPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildHeader(){
+    if(_isLoading){
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }else{
+      return const Text(
+        "Sign In",
+        textAlign: TextAlign.center,
+        style: TextStyle(
+            color: Colors.black,
+            fontSize: 30.0,
+            fontWeight: FontWeight.w900
+        ),
+      );
+    }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:time_tracker/app_sign_in/sign_in_page.dart';
 import 'package:time_tracker/home_page/home_page.dart';
 import 'package:time_tracker/services/auth.dart';
@@ -17,7 +18,7 @@ class _LandingPageState extends State<LandingPage> {
 
   @override
   Widget build(BuildContext context) {
-    final AuthBase? auth = AuthProvider.of(context);
+    final AuthBase? auth = Provider.of<AuthBase>(context, listen: false);
     return StreamBuilder<AuthUser?>(
         stream: auth!.authUserStateChanges,
         builder: (context, snapshot) {

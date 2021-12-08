@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:time_tracker/app_sign_in/sign_in_button.dart';
 import 'package:time_tracker/app_sign_in/validator.dart';
 import 'package:time_tracker/common_widget/platform_altert_widget.dart';
@@ -35,6 +36,16 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
   String get _getPassword =>  _passwordController.text;
 
 
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+
+    super.dispose();
+  }
+
 
   void _submit() async{
     setState(() {
@@ -44,7 +55,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
    //await Future.delayed(Duration(seconds: 5));
 
     try{
-      final auth = AuthProvider.of(context);
+      final auth = Provider.of<AuthBase>(context, listen: false);
       if(_formType == EmailSignInformType.signIn){
           await auth.signInWithEmailPassword(_getEmail, _getPassword);
       }else{
@@ -54,7 +65,7 @@ class _EmailSignInFormState extends State<EmailSignInForm> {
 
       Navigator.pop(context);
 
-    }catch(e){
+    } on Exception catch(e){
         PlatformAlertWidget(
             title: "Sign in Failed",
             content: e.toString(),
