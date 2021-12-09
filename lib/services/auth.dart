@@ -8,12 +8,14 @@ class AuthUser {
 }
 
 abstract class AuthBase {
-  Future<AuthUser?> signInAnonymously();
   Future<AuthUser?> currentUser();
   Future<void> signOut();
   Stream<AuthUser?>? get authUserStateChanges;
+
+  Future<AuthUser?> signInAnonymously();
   Future<AuthUser?> signWithGoogle();
   Future<AuthUser?> signWithFacebook();
+
   Future<AuthUser?> signInWithEmailPassword(String email, String password);
   Future<AuthUser?> signUpWithEmailPassword(String email, String password);
 }

@@ -9,6 +9,7 @@ import 'package:time_tracker/services/auth_providers.dart';
 class LandingPage extends StatefulWidget {
   const LandingPage({Key? key}) : super(key: key);
 
+
   @override
   _LandingPageState createState() => _LandingPageState();
 }
@@ -26,7 +27,7 @@ class _LandingPageState extends State<LandingPage> {
             AuthUser? mUser = snapshot.data;
             return mUser != null
                 ? HomePage()
-                : SignInPage();
+                : SignInPage.create(context);
           }else if(snapshot.connectionState == ConnectionState.waiting){
             return Scaffold(
               body: CircularProgressIndicator(),
