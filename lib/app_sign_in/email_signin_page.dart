@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracker/app_sign_in/email_sign_in_form_bloc_based.dart';
+import 'package:time_tracker/app_sign_in/email_sign_in_form_change_notifier.dart';
 import 'package:time_tracker/app_sign_in/email_signin_form.dart';
 import 'package:time_tracker/services/auth.dart';
 
@@ -24,7 +25,7 @@ class EmailSignInPage extends StatelessWidget {
 
   Widget _buildContent(BuildContext context) {
     return Container(
-      child: EmailSignInFormBlocBased.create(context),
+      child: EmailSignInFormChangeNotifier.create(context),
     );
   }
 }
